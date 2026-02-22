@@ -89,5 +89,6 @@ public function create()
 {
     AuthMiddleware::check();
     $this->view('tasks/create');
+    
 }
 }

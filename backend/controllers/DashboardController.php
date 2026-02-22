@@ -6,6 +6,7 @@ require_once "../backend/models/Task.php";
 
 class DashboardController extends Controller
 {
+    
     public function index()
 {
     AuthMiddleware::check();
@@ -13,6 +14,28 @@ class DashboardController extends Controller
     $taskModel = new Task();
     $tasks = $taskModel->getByUser($_SESSION['user']['id']);
 
-    $this->view('dashboard', ['tasks' => $tasks]);
+     $totalTasks = count($tasks);
+
+$completedTasks = 0;
+
+foreach ($tasks as $task) {
+    if ($task['status'] == 1) {
+        $completedTasks++;
+    }
 }
+
+$remainingTasks = $totalTasks - $completedTasks;
+
+$completionPercentage = $totalTasks > 0
+    ? round(($completedTasks / $totalTasks) * 100)
+    : 0;
+    $this->view('dashboard', [
+    'tasks' => $tasks,
+    'totalTasks' => $totalTasks,
+    'completedTasks' => $completedTasks,
+    'remainingTasks' => $remainingTasks,
+    'completionPercentage' => $completionPercentage
+]);
+}
+
 }

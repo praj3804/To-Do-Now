@@ -15,3 +15,8 @@ $router->get('tasks/edit', 'TaskController@edit');
 $router->post('tasks/update', 'TaskController@update');
 $router->get('tasks/create', 'TaskController@create');
 $router->post('tasks', 'TaskController@store');
+$router->get('profile', 'ProfileController@index');
+$router->get('profile/edit', 'ProfileController@edit');
+$router->post('profile/update', 'ProfileController@update');
+$router->get('profile/create', 'ProfileController@create');
+$router->post('profile/store', 'ProfileController@store');

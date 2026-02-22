@@ -81,7 +81,7 @@ class AuthController extends Controller
     if ($user['role'] === 'admin') {
         header("Location: /to-do-now/public/admin/dashboard");
     } else {
-        header("Location: /to-do-now/public/dashboard");
+        header("Location: /to-do-now/public/profile");
     }
 
     exit;
