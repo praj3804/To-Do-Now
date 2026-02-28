@@ -20,5 +20,5 @@ class Database
         }
 
         return $conn;
-    }   
+    }
 }

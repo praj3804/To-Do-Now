@@ -1,4 +1,4 @@
-<nav class="bg-gray-700 p-4 text-white">
+<nav class="bg-gray-900 p-4 text-white">
     <div class="container mx-auto flex justify-between">
         <a href="/to-do-now/public/" class="font-bold text-4xl">To-Do-Now</a>
 

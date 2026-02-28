@@ -7,41 +7,78 @@ require_once "../backend/models/Task.php";
 class AdminController extends Controller
 {
     public function index()
-{
-    AuthMiddleware::admin();
+    {
+        AuthMiddleware::admin();
+        $users = $this->getAllUsers();
+        $tasks = $this->getAllTasks();
+        $totalUsers = count($users);
+        $totalTasks = count($tasks);
 
-    $userModel = new User();
-    $taskModel = new Task();
+        $completedTasks = 0;
+        foreach ($tasks as $task) {
+            if ($task['status'] == 1) {
+                $completedTasks++;
+            }
+        }
 
-    $users = $this->getAllUsers();
-    $tasks = $this->getAllTasks();
+        $pendingTasks = $totalTasks - $completedTasks;
 
-    $this->view('admin/dashboard', [
-        'users' => $users,
-        'tasks' => $tasks
-    ]);
-}
+        $growthData = $this->getUserGrowth();
+        $dates = [];
+        $counts = [];
+        $total = 0;
 
-private function getAllUsers()
-{
-    $database = new Database();
-    $conn = $database->connect();
+        foreach ($growthData as $row) {
+            $dates[] = date("M d", strtotime($row['date']));
+            $total += $row['new_users'];   // accumulate users
+            $counts[] = $total;
+        }
 
-    $stmt = $conn->query("SELECT id, name, email, role, created_at FROM users");
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
 
-private function getAllTasks()
-{
-    $database = new Database();
-    $conn = $database->connect();
+        $this->view('admin/dashboard', [
+            'totalUsers' => $totalUsers,
+            'totalTasks' => $totalTasks,
+            'completedTasks' => $completedTasks,
+            'pendingTasks' => $pendingTasks,
+            'dates' => json_encode($dates),
+            'counts' => json_encode($counts)
+        ]);
+    }
 
-    $stmt = $conn->query(
-        "SELECT tasks.*, users.name 
+    private function getAllUsers()
+    {
+        $database = new Database();
+        $conn = $database->connect();
+
+        $stmt = $conn->query("SELECT id, name, email, role, created_at FROM users");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    private function getAllTasks()
+    {
+        $database = new Database();
+        $conn = $database->connect();
+
+        $stmt = $conn->query(
+            "SELECT tasks.*, users.name 
          FROM tasks 
          JOIN users ON tasks.user_id = users.id"
-    );
+        );
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    private function getUserGrowth()
+    {
+        $database = new Database();
+        $conn = $database->connect();
+
+        $stmt = $conn->query("
+        SELECT DATE(created_at) as date, COUNT(*) as new_users
+        FROM users
+        GROUP BY DATE(created_at)
+        ORDER BY date ASC
+    ");
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

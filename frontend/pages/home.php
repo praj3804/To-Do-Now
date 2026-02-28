@@ -1,7 +1,6 @@
  <h1 class="text-3xl font-bold text-center py-10">Welcome to To-Do-Now</h1>
  <p class="text-center text-gray-700 text-lg">Your ultimate task management solution. Stay organized, boost productivity, and never miss a deadline again.</p>
  <div class="rounded bg-gray-300 hover:shadow-lg container mx-auto mt-10 p-6 shadow flex items-center gap-6">
-
      <div class="w-2/3">
          <h1 class="text-2xl font-semibold">About To-Do-Now</h1>
          <p class="mt-2 text-gray-700">
